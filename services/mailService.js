@@ -11,15 +11,18 @@ function getTransporter() {
 
         transporter = nodemailer.createTransport({
             host: process.env.SMTP_SERVER,
-            port: Number(process.env.SMTP_PORT),
-            secure: false,
+            port: Number(process.env.SMTP_PORT) || 465, // Default to 465 if not set
+            secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for other ports like 587
             auth: {
                 user: process.env.BREVO_SMTP_USER,
                 pass: process.env.BREVO_SMTP_KEY,
             },
-            connectionTimeout: 10000, // 10 seconds
-            greetingTimeout: 10000,
-            socketTimeout: 10000,
+            connectionTimeout: 30000, // 30 seconds
+            greetingTimeout: 30000,
+            socketTimeout: 30000,
+            tls: {
+                rejectUnauthorized: false // Accept self-signed certificates
+            }
         });
 
         // Verify connection
