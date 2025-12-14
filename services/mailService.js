@@ -11,17 +11,19 @@ function getTransporter() {
 
         transporter = nodemailer.createTransport({
             host: process.env.SMTP_SERVER,
-            port: Number(process.env.SMTP_PORT) || 465, // Default to 465 if not set
-            secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for other ports like 587
+            port: Number(process.env.SMTP_PORT) || 2525, // Default to 2525 (cloud-friendly port)
+            secure: false, // Use STARTTLS instead of direct SSL
+            requireTLS: true, // Require TLS encryption
             auth: {
                 user: process.env.BREVO_SMTP_USER,
                 pass: process.env.BREVO_SMTP_KEY,
             },
-            connectionTimeout: 30000, // 30 seconds
+            connectionTimeout: 60000, // 60 seconds
             greetingTimeout: 30000,
-            socketTimeout: 30000,
+            socketTimeout: 60000,
             tls: {
-                rejectUnauthorized: false // Accept self-signed certificates
+                rejectUnauthorized: false, // Accept self-signed certificates
+                ciphers: 'SSLv3'
             }
         });
 
